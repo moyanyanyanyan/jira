@@ -1,0 +1,9 @@
+html {
+  /* rem是相对于html */
+  /* 浏览器默认字体大小为16px，1rem=16px */
+  /* 1rem=100px，100/16=62.5% */
+  font-size: 62.5%;
+}
+html body #root .App {
+  min-height: 100vh;
+}

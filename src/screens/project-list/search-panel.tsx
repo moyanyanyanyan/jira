@@ -1,46 +1,45 @@
-import { useEffect, useState } from "react";
 import React from "react";
-import { User, Project } from "../../types";
+import { Input, Form } from "antd";
+import { Project } from "types/project";
+import { UserSelect } from "components/user-select";
+import { Users } from "types/user";
 
-interface Props {
-  users: User[];
-  param: {
-    name: string;
-    personId: string;
-  };
-  setParam: (param: any) => void;
+//实现了项目列表页的搜索筛选栏
+interface SearchParams {
+  params: Partial<Pick<Project, "name" | "personId">>;
+  users: Users[];
+  setParams: (params: SearchParams["params"]) => void;
 }
 
-export const SearchPanel = ({ users, param, setParam }: Props) => {
-  //第一部分：定义状态的代码
-
-  //第三部分：组件实际上返回的dom
+export const SearchPanel = ({ params, setParams, users }: SearchParams) => {
   return (
-    <form>
-      <input
-        type="text"
-        value={param.name}
-        onChange={(e) => {
-          setParam({
-            ...param,
-            name: e.target.value,
-          });
-        }}
-      />
-      <select //这个里面展示的是名字，但是筛选条件的value是id
-        value={param.personId}
-        onChange={(e) => {
-          setParam({
-            ...param,
-            personId: e.target.value,
-          });
-        }}
-      >
-        <option value={""}>负责人</option>
-        {users.map((user) => (
-          <option value={user.id}>{user.name}</option>
-        ))}
-      </select>
-    </form>
+    <Form style={{ marginBottom: "2rem" }} layout={"inline"}>
+      <Form.Item>
+        <Input
+          placeholder="项目名称"
+          type="text"
+          value={params.name}
+          onChange={(c) => {
+            setParams({
+              ...params,
+              name: c.target.value,
+            });
+          }}
+        />
+      </Form.Item>
+
+      <Form.Item>
+        <UserSelect
+          defaultOptionName={"负责人"}
+          value={params.personId}
+          onChange={(value: number | undefined) =>
+            setParams({
+              ...params,
+              personId: value,
+            })
+          }
+        />
+      </Form.Item>
+    </Form>
   );
 };

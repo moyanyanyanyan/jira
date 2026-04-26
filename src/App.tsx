@@ -1,13 +1,25 @@
 import React from "react";
-import { ProjectListScreen } from "./screens/project-list/index";
-import { LoginScreen } from "screens/login";
+import { useAuth } from "context/auth-context";
+import "./App.css";
+import { FullPageError, FullPageLoading } from "components/lib";
+import Errorboundary from "components/error-boundary";
 
-export default function App() {
+const AuthenticatedApp = React.lazy(() => import("authenticated-app"));
+const UnauthenticatedApp = React.lazy(() => import("unauthenticated-app"));
+
+//整个应用的根组件
+//根据用户是否登录，动态加载和渲染不同的应用界面。
+function App() {
+  const { user } = useAuth();
   return (
     <div className="App">
-      <LoginScreen />
-      {/* 欢迎来到react的实际项目
-      <ProjectListScreen /> */}
+      <Errorboundary fallbackRender={FullPageError}>
+        <React.Suspense fallback={<FullPageLoading />}>
+          {user ? <AuthenticatedApp /> : <UnauthenticatedApp />}
+        </React.Suspense>
+      </Errorboundary>
     </div>
   );
 }
+
+export default App;
